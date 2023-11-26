@@ -1,7 +1,8 @@
 import React from 'react'
 import { useState } from 'react'
+import Swal from 'sweetalert2'
 
-const Controlado = () => {
+const Formulario = ({addTodo}) => {
 
     // const [title,setTitle]=useState('')
     // const [description,setDescription]=useState('')
@@ -14,17 +15,37 @@ const Controlado = () => {
         priority: false
     })
 
+    const { title, description, state, priority } = todo;
+
     const handleSubmit=(e)=>{
         e.preventDefault()
-
+        if(!title.trim() || !description.trim()){
+            return Swal.fire({
+                icon: 'error',
+                title: 'ooppsss...',
+                text: 'Titulo y descripcion obligatorios'
+            })
+        } 
+        addTodo({
+            id: Date.now(),
+            ...todo,
+            state: state==='completado'          
+        })
+        Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "Todo agregado correctamente",
+            showConfirmButton: false,
+            timer: 1500
+          });
     }
     
     const handleChange=(e)=>{
-        console.log(e.target.value)
-        console.log(e.target.name)
+        // console.log(e.target.value)
+        // console.log(e.target.name)
         setTodo({
             ...todo,
-            [e.target.name]: e.target.name==='checkbox' ? e.target.checked : e.target.value,
+            [e.target.name]: e.target.type==='checkbox' ? e.target.checked : e.target.value,
         })
     }
     return (
@@ -47,4 +68,4 @@ const Controlado = () => {
     )
 }
 
-export default Controlado
+export default Formulario
